@@ -11,8 +11,8 @@
 
 body{
 margin:0;
+background:#f6fbfc;
 font-family:'Poppins',sans-serif;
-background:#f4f6f9;
 color:#333;
 }
 
@@ -21,50 +21,79 @@ color:#333;
 .header{
 display:flex;
 align-items:center;
-gap:15px;
+gap:16px;
 padding:30px 60px 10px 60px;
 }
 
 .header img{
-width:55px;
+width:60px;
 }
 
 .header h1{
 font-family:'Montserrat',sans-serif;
-font-size:32px;
 font-weight:700;
-color:#1785ad;
+font-size:32px;
+color:#00A8C6;
 margin:0;
 }
 
-/* instruction section */
+/* instruction box */
 
 .notice{
-padding:10px 60px 30px 60px;
+margin:10px 60px 30px 60px;
+padding:15px;
+border:1px solid #00A8C6;
+border-radius:4px;
 font-style:italic;
 font-size:15px;
 line-height:1.7;
+background:#ffffff;
 }
 
 .notice a{
-color:#1785ad;
+color:#00A8C6;
+text-decoration:none;
 }
 
-/* list section */
+.notice a:hover{
+text-decoration:underline;
+}
+
+/* search */
+
+.search{
+padding:0 60px 20px 60px;
+}
+
+.search input{
+width:320px;
+padding:10px;
+font-size:15px;
+border:1px solid #ccc;
+border-radius:4px;
+outline:none;
+}
+
+.search input:focus{
+border-color:#00A8C6;
+}
+
+/* list */
 
 .list{
-padding:10px 60px 60px 60px;
+padding:0 60px 80px 60px;
 }
 
 .person{
 padding:12px 0;
-border-bottom:1px solid #e4e6eb;
+border-bottom:1px solid #e6e6e6;
 font-size:17px;
 cursor:pointer;
 }
 
 .person:hover{
-color:#1785ad;
+color:#00A8C6;
+background:#f0fcff;
 }
 
 /* popup */
@@ -79,34 +108,38 @@ background:white;
 padding:25px;
 width:420px;
 border-radius:8px;
-box-shadow:0 10px 30px rgba(0,0,0,0.2);
+box-shadow:0 12px 35px rgba(0,0,0,0.25);
 z-index:1000;
 }
 
 .popup img{
-width:160px;
-margin-bottom:10px;
+width:170px;
 border-radius:6px;
+margin-bottom:10px;
 }
 
 .popup button{
 margin-top:10px;
-padding:6px 14px;
+padding:7px 14px;
 border:none;
-background:#1785ad;
+background:#00A8C6;
 color:white;
 border-radius:4px;
 cursor:pointer;
+}
+
+.popup button:hover{
+background:#0094ad;
 }
 
 /* footer */
 
 .footer{
 position:fixed;
-bottom:10px;
+bottom:12px;
 right:20px;
 font-size:11px;
-color:#888;
+color:#777;
 }
 
 </style>
@@ -143,6 +176,11 @@ https://gbc.iskcon.org/list-of-initiating-gurus-in-iskcon/
 </div>
 
 
+<div class="search">
+<input type="text" id="searchInput" placeholder="Search guru name..." onkeyup="searchGuru()">
+</div>
+
+
 <div class="list" id="list"></div>
 
 
@@ -161,11 +199,23 @@ Presented by Sourav
 
 <script>
 
+let allRows=[];
+
 fetch("data.csv")
 .then(res=>res.text())
 .then(text=>{
 
 let rows=text.split("\n");
+allRows=rows;
+
+displayList(rows);
+
+});
+
+function displayList(rows){
+
+let list=document.getElementById("list");
+list.innerHTML="";
 
 rows.forEach((row,index)=>{
 
@@ -188,11 +238,21 @@ document.getElementById("photo").src=image;
 document.getElementById("bio").innerText=bio;
 };
 
-document.getElementById("list").appendChild(div);
+list.appendChild(div);
 
 });
 
-});
+}
+
+function searchGuru(){
+
+let input=document.getElementById("searchInput").value.toLowerCase();
+
+let filtered=allRows.filter(row=>row.toLowerCase().includes(input));
+
+displayList(filtered);
+
+}
 
 function closePopup(){
 document.getElementById("popup").style.display="none";
