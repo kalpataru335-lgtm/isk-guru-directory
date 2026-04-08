@@ -8,22 +8,20 @@
 <style>
 
 body{
-font-family: Verdana, sans-serif;
-background:#faf4e8;
-padding:40px;
+font-family: "Segoe UI", Arial, sans-serif;
+background:#f2f4f7;
 margin:0;
+padding:40px;
+color:#333;
 }
 
-/* Main container */
-
 .container{
-max-width:900px;
+max-width:850px;
 margin:auto;
 background:white;
-padding:30px;
-border:2px solid #caa85d;
-border-radius:10px;
-box-shadow:0 4px 10px rgba(0,0,0,0.1);
+padding:35px;
+border-radius:8px;
+box-shadow:0 3px 12px rgba(0,0,0,0.08);
 }
 
 /* Header */
@@ -31,46 +29,45 @@ box-shadow:0 4px 10px rgba(0,0,0,0.1);
 .header{
 display:flex;
 align-items:center;
-gap:15px;
+gap:12px;
 margin-bottom:10px;
 }
 
 .header img{
-width:40px;
+width:34px;
 }
 
 .header h1{
-font-family: Georgia, serif;
-color:#8b0000;
+font-size:28px;
 margin:0;
+font-weight:600;
 }
 
-/* Notice box */
+/* Info box */
 
 .notice{
-background:#fff3cd;
-border-left:6px solid #caa85d;
-padding:15px;
-margin:20px 0;
+background:#f8f9fb;
+border-left:4px solid #4a90e2;
+padding:14px;
+margin:18px 0 25px 0;
 font-size:14px;
 line-height:1.6;
 }
 
-/* Devotee list */
+/* List items */
 
 .person{
-cursor:pointer;
-padding:10px;
-border-bottom:1px solid #e2e2e2;
-font-family: "Trebuchet MS", sans-serif;
+padding:10px 6px;
+border-bottom:1px solid #eee;
 font-size:16px;
+cursor:pointer;
 }
 
 .person:hover{
-background:#f7f1e3;
+background:#f6f8fa;
 }
 
-/* Popup card */
+/* Popup */
 
 .popup{
 display:none;
@@ -81,29 +78,39 @@ transform:translate(-50%,-50%);
 background:white;
 padding:25px;
 width:420px;
-border-radius:10px;
-box-shadow:0 0 20px rgba(0,0,0,0.3);
+border-radius:8px;
+box-shadow:0 6px 30px rgba(0,0,0,0.25);
 z-index:1000;
 }
 
 .popup img{
 width:160px;
+border-radius:6px;
 margin-bottom:10px;
-border-radius:5px;
 }
 
 .popup button{
 margin-top:10px;
-padding:6px 12px;
-background:#8b0000;
-color:white;
+padding:7px 14px;
 border:none;
+background:#4a90e2;
+color:white;
 border-radius:4px;
 cursor:pointer;
 }
 
 .popup button:hover{
-background:#a40000;
+background:#357abd;
+}
+
+/* Footer */
+
+.footer{
+position:fixed;
+bottom:10px;
+right:15px;
+font-size:11px;
+color:#777;
 }
 
 </style>
@@ -115,11 +122,8 @@ background:#a40000;
 <div class="container">
 
 <div class="header">
-
 <img src="https://www.iskconcommunications.org/images/faviconiskcon.png">
-
 <h1>Listed Initiating Gurus of ISKCON</h1>
-
 </div>
 
 <div class="notice">
@@ -132,7 +136,7 @@ There can be more initiating gurus in ISKCON which are not mentioned in this lis
 
 <br><br>
 
-Source:  
+Source:
 <a href="https://gbc.iskcon.org/list-of-initiating-gurus-in-iskcon/" target="_blank">
 https://gbc.iskcon.org/list-of-initiating-gurus-in-iskcon/
 </a>
@@ -152,6 +156,11 @@ https://gbc.iskcon.org/list-of-initiating-gurus-in-iskcon/
 </div>
 
 
+<div class="footer">
+Presented by Sourav
+</div>
+
+
 <script>
 
 fetch("data.csv")
@@ -167,6 +176,8 @@ let cols=row.split(",");
 let name=cols[0];
 let image=cols[1];
 let bio=cols.slice(2).join(",");
+
+if(!name) return;
 
 let div=document.createElement("div");
 div.className="person";
@@ -192,5 +203,4 @@ document.getElementById("popup").style.display="none";
 </script>
 
 </body>
-
 </html>
