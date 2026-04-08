@@ -1,37 +1,241 @@
-<script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
+<!DOCTYPE html>
+<html>
+
+<head>
+
+<title>Listed Initiating Gurus of ISKCON</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700&family=Poppins:wght@400;500&display=swap" rel="stylesheet">
+
+<style>
+
+body{
+margin:0;
+background:#f6fbfc;
+font-family:'Poppins',sans-serif;
+color:#333;
+}
+
+/* header */
+
+.header{
+display:flex;
+align-items:center;
+gap:16px;
+padding:30px 60px 10px 60px;
+}
+
+.header img{
+width:60px;
+}
+
+.header h1{
+font-family:'Montserrat',sans-serif;
+font-weight:700;
+font-size:32px;
+color:#00A8C6;
+margin:0;
+}
+
+/* instruction box */
+
+.notice{
+margin:10px 60px 30px 60px;
+padding:15px;
+border:1px solid #00A8C6;
+border-radius:4px;
+font-style:italic;
+font-size:15px;
+line-height:1.7;
+}
+
+.notice a{
+color:#00A8C6;
+text-decoration:none;
+}
+
+.notice a:hover{
+text-decoration:underline;
+}
+
+/* search */
+
+.search{
+padding:0 60px 20px 60px;
+}
+
+.search input{
+width:320px;
+padding:10px;
+font-size:15px;
+border:1px solid #ccc;
+border-radius:4px;
+outline:none;
+}
+
+.search input:focus{
+border-color:#00A8C6;
+}
+
+/* list */
+
+.list{
+padding:0 60px 80px 60px;
+}
+
+.person{
+padding:12px 0;
+border-bottom:1px solid #e6e6e6;
+font-size:17px;
+cursor:pointer;
+}
+
+.person:hover{
+color:#00A8C6;
+background:#f0fcff;
+}
+
+/* popup */
+
+.popup{
+display:none;
+position:fixed;
+top:50%;
+left:50%;
+transform:translate(-50%,-50%);
+background:white;
+padding:25px;
+width:420px;
+border-radius:8px;
+box-shadow:0 12px 35px rgba(0,0,0,0.25);
+z-index:1000;
+}
+
+.popup img{
+width:170px;
+border-radius:6px;
+margin-bottom:10px;
+}
+
+.popup button{
+margin-top:10px;
+padding:7px 14px;
+border:none;
+background:#00A8C6;
+color:white;
+border-radius:4px;
+cursor:pointer;
+}
+
+.popup button:hover{
+background:#0094ad;
+}
+
+/* footer */
+
+.footer{
+position:fixed;
+bottom:12px;
+right:20px;
+font-size:11px;
+color:#777;
+}
+
+</style>
+
+</head>
+
+<body>
+
+
+<div class="header">
+
+<img src="https://cdn.hdgoswami.com/uploads/20170925213629/iskconLogo_300.jpg">
+
+<h1>Listed Initiating Gurus of ISKCON</h1>
+
+</div>
+
+
+<div class="notice">
+
+There can be more initiating gurus in ISKCON which are not mentioned in this list as they are not listed on the official ISKCON GBC website till 8-Apr-2026.
+
+<br><br>
+
+Click on the name of the guru you want to know more about.
+
+<br><br>
+
+Source:
+<a href="https://gbc.iskcon.org/list-of-initiating-gurus-in-iskcon/" target="_blank">
+https://gbc.iskcon.org/list-of-initiating-gurus-in-iskcon/
+</a>
+
+</div>
+
+
+<div class="search">
+<input type="text" id="searchInput" placeholder="Search guru name..." onkeyup="searchGuru()">
+</div>
+
+
+<div class="list" id="list"></div>
+
+
+<div id="popup" class="popup">
+<h2 id="name"></h2>
+<img id="photo">
+<p id="bio"></p>
+<button onclick="closePopup()">Close</button>
+</div>
+
+
+<div class="footer">
+Presented by Sourav
+</div>
+
 
 <script>
 
-let allData=[];
+let allRows=[];
 
 fetch("data.csv")
-.then(response => response.text())
-.then(csvText => {
+.then(res=>res.text())
+.then(text=>{
 
-const parsed = Papa.parse(csvText,{
-skipEmptyLines:true
+let rows=text.trim().split("\n");
+allRows=rows;
+
+displayList(rows);
+
+})
+.catch(err=>{
+console.error("CSV load error:",err);
 });
 
-allData = parsed.data;
 
-displayList(allData);
-
-});
-
-function displayList(data){
+function displayList(rows){
 
 const list=document.getElementById("list");
 list.innerHTML="";
 
-data.forEach((row,index)=>{
+rows.forEach((row,index)=>{
 
-const name=row[0];
-const image=row[1];
-const bio=row.slice(2).join(",");
+if(!row.trim()) return;
 
-if(!name) return;
+/* safely extract name,image,bio */
 
-const div=document.createElement("div");
+let firstComma=row.indexOf(",");
+let secondComma=row.indexOf(",",firstComma+1);
+
+if(firstComma===-1 || secondComma===-1) return;
+
+let name=row.substring(0,firstComma).trim();
+let image=row.substring(firstComma+1,secondComma).trim();
+let bio=row.substring(secondComma+1).trim();
+
+let div=document.createElement("div");
 div.className="person";
 div.innerText=(index+1)+". "+name;
 
@@ -41,7 +245,14 @@ document.getElementById("popup").style.display="block";
 
 document.getElementById("name").innerText=name;
 
-document.getElementById("photo").src=image;
+let img=document.getElementById("photo");
+img.src=image;
+
+/* fallback if image fails */
+
+img.onerror=function(){
+this.src="https://cdn.hdgoswami.com/uploads/20170925213629/iskconLogo_300.jpg";
+};
 
 document.getElementById("bio").innerText=bio;
 
@@ -53,20 +264,26 @@ list.appendChild(div);
 
 }
 
+
 function searchGuru(){
 
 let input=document.getElementById("searchInput").value.toLowerCase();
 
-let filtered=allData.filter(row =>
-row.join(" ").toLowerCase().includes(input)
+let filtered=allRows.filter(row =>
+row.toLowerCase().includes(input)
 );
 
 displayList(filtered);
 
 }
 
+
 function closePopup(){
 document.getElementById("popup").style.display="none";
 }
 
 </script>
+
+</body>
+
+</html>
