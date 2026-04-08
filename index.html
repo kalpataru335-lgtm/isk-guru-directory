@@ -36,7 +36,7 @@ color:#1aa3c8;
 margin:0;
 }
 
-/* NOTICE */
+/* NOTICE BOX */
 
 .notice{
 margin:10px 60px 30px 60px;
@@ -127,7 +127,7 @@ cursor:pointer;
 }
 
 .popup button:hover{
-background:#168fb0;
+background:#168ea8;
 }
 
 /* FOOTER */
@@ -215,8 +215,7 @@ allRows=rows;
 
 displayList(rows);
 
-})
-.catch(err=>console.error("CSV loading error:",err));
+});
 
 
 /* DISPLAY LIST */
@@ -230,8 +229,6 @@ list.innerHTML="";
 rows.forEach((row,index)=>{
 
 if(!row.trim()) return;
-
-/* safe CSV extraction */
 
 let first=row.indexOf(",");
 let second=row.indexOf(",",first+1);
@@ -254,19 +251,7 @@ document.getElementById("popup").style.display="block";
 
 document.getElementById("name").innerText=name;
 
-/* IMAGE FIX WITH PROXY */
-
-let img=document.getElementById("photo");
-
-let clean=image.replace("https://","");
-
-img.src="https://images.weserv.nl/?url="+clean;
-
-img.onerror=function(){
-
-this.src="https://cdn.hdgoswami.com/uploads/20170925213629/iskconLogo_300.jpg";
-
-};
+loadImage(image);
 
 document.getElementById("bio").innerText=bio;
 
@@ -279,13 +264,44 @@ list.appendChild(div);
 }
 
 
+/* IMAGE LOADING LOGIC */
+
+function loadImage(url){
+
+let img=document.getElementById("photo");
+
+/* STEP 1: try original */
+
+img.src=url;
+
+img.onerror=function(){
+
+/* STEP 2: try proxy */
+
+let proxy="https://images.weserv.nl/?url="+url.replace(/^https?:\/\//,"");
+
+img.onerror=function(){
+
+/* STEP 3: fallback logo */
+
+this.src="https://cdn.hdgoswami.com/uploads/20170925213629/iskconLogo_300.jpg";
+
+};
+
+img.src=proxy;
+
+};
+
+}
+
+
 /* SEARCH */
 
 function searchGuru(){
 
 let input=document.getElementById("searchInput").value.toLowerCase();
 
-let filtered=allRows.filter(row => row.toLowerCase().includes(input));
+let filtered=allRows.filter(row=>row.toLowerCase().includes(input));
 
 displayList(filtered);
 
