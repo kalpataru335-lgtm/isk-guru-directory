@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Guru Directory</title>
+
+<style>
+
+body{
+font-family: Arial;
+background:#f5f5f5;
+padding:40px;
+}
+
+.person{
+cursor:pointer;
+padding:10px;
+border-bottom:1px solid #ddd;
+}
+
+.popup{
+display:none;
+position:fixed;
+top:50%;
+left:50%;
+transform:translate(-50%,-50%);
+background:white;
+padding:20px;
+width:400px;
+box-shadow:0 0 10px rgba(0,0,0,0.3);
+}
+
+.popup img{
+width:150px;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<h1>Guru Directory</h1>
+
+<div id="list"></div>
+
+<div id="popup" class="popup">
+<h2 id="name"></h2>
+<img id="photo">
+<p id="bio"></p>
+<button onclick="closePopup()">Close</button>
+</div>
+
+<script>
+
+fetch("data.csv")
+.then(res=>res.text())
+.then(text=>{
+
+let rows=text.split("\n").slice(1);
+
+rows.forEach(row=>{
+
+let cols=row.split(",");
+
+let name=cols[0];
+let image=cols[1];
+let bio=cols.slice(2).join(",");
+
+let div=document.createElement("div");
+div.className="person";
+div.innerText=name;
+
+div.onclick=()=>{
+document.getElementById("popup").style.display="block";
+document.getElementById("name").innerText=name;
+document.getElementById("photo").src=image;
+document.getElementById("bio").innerText=bio;
+};
+
+document.getElementById("list").appendChild(div);
+
+});
+
+});
+
+function closePopup(){
+document.getElementById("popup").style.display="none";
+}
+
+</script>
+
+</body>
+</html>
